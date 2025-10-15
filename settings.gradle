@@ -1,9 +1,9 @@
-rootProject.name = "MCServerStatus"
-include(":app")
 pluginManagement {
     repositories {
         google()
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
+rootProject.name = "MCServerStatus"
+include(":app")
