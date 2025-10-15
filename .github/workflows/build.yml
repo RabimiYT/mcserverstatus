@@ -2,9 +2,7 @@ name: Android CI Build
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ main, master ]
   pull_request:
 
 jobs:
@@ -23,31 +21,33 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # ③ Android SDKをセットアップ
-      - name: Install Android SDK
-        run: |
-          mkdir -p $HOME/android-sdk
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmd.zip
-          unzip cmd.zip -d $HOME/android-sdk/cmdline-tools
-          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      # ③ 既存のAndroid SDKを利用（プリインストール済）
+      - name: Set Android SDK path
+        run: echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
 
-      # ④ Gradle 8.7 をセットアップ
+      # ④ SDKライセンスを承諾
+      - name: Accept Android SDK licenses
+        run: yes | sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+
+      # ⑤ 必要なSDKコンポーネントをインストール
+      - name: Install required SDK packages
+        run: |
+          sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      # ⑥ Gradle 8.7をセットアップ
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.7
 
-      # ⑤ ビルド
+      # ⑦ ビルド
       - name: Build release APK
-        run: |
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
-          gradle assembleRelease --stacktrace
+        run: gradle assembleRelease --stacktrace
 
-      # ⑥ 成果物をアップロード
+      # ⑧ 成果物をアップロード
       - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: mcserverstatus-release
-          path: app/build/outputs/apk/release/
+          path: app/build/outputs/apk/release/*.apk
