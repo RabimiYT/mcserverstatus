@@ -18,21 +18,24 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            platforms;android-34
-            build-tools;34.0.0
-
-      - name: Accept SDK licenses
-        run: yes | sdkmanager --licenses
+      - name: Install Android SDK manually
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y wget unzip
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
+          unzip -q tools.zip -d latest
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Grant execute permission for Gradle
         run: chmod +x ./gradlew
 
       - name: Build release APK
+        env:
+          ANDROID_SDK_ROOT: $HOME/android-sdk
         run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload release APK
