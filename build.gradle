@@ -1,16 +1,14 @@
-// 🔹 buildscript は最初に書く必要あり
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        // Android Gradle Plugin
         classpath "com.android.tools.build:gradle:8.5.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
     }
 }
 
-// 🔹 plugins ブロックは「app/build.gradle」で使うのでここには不要
 allprojects {
     repositories {
         google()
@@ -18,18 +16,6 @@ allprojects {
     }
 }
 
-// 🔹 app モジュールをビルド対象に指定
-subprojects {
-    afterEvaluate { project ->
-        if (project.hasProperty("android")) {
-            project.android {
-                compileSdkVersion 34
-            }
-        }
-    }
-}
-
-plugins {
-    id 'com.android.application' version '8.5.2' apply false
-    id 'org.jetbrains.kotlin.android' version '1.9.23' apply false
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
