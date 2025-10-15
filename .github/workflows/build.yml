@@ -20,39 +20,34 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # 3️⃣ Android SDK を手動インストール
-      - name: Install Android SDK manually
+      # 3️⃣ Gradle インストール
+      - name: Install Gradle
         run: |
           sudo apt-get update -qq
+          sudo apt-get install -y gradle
+
+      # 4️⃣ Android SDK を手動インストール
+      - name: Install Android SDK manually
+        run: |
           sudo apt-get install -y wget unzip
           # SDK 配置先ディレクトリ作成
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
           # コマンドラインツール zip をダウンロード
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
-          # 展開
           unzip -q cmdline-tools.zip -d temp
-          # 正しい構造に移動
           mv temp/cmdline-tools latest
-          # 環境変数設定
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
-          # sdkmanager が動くか確認
           sdkmanager --list
-          # ライセンス承認
           yes | sdkmanager --licenses
-          # 必要なパッケージをインストール
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-
-      # 4️⃣ Gradle 実行権限
-      - name: Grant execute permission for Gradle
-        run: chmod +x ./gradlew
 
       # 5️⃣ APKビルド
       - name: Build release APK
         env:
           ANDROID_SDK_ROOT: $HOME/android-sdk
-        run: ./gradlew assembleRelease --stacktrace
+        run: gradle assembleRelease --stacktrace
 
       # 6️⃣ APKアップロード
       - name: Upload release APK
