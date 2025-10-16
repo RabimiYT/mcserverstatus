@@ -1,70 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/backgroundColor"
     tools:context=".MainActivity">
 
-    <!-- ツールバー -->
-    <RelativeLayout
+    <!-- Toolbar -->
+    <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:background="@color/toolbarColor"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:paddingHorizontal="12dp">
 
-        <!-- McServerStatus テキスト -->
+        <!-- 左にタイトル -->
         <TextView
-            android:id="@+id/toolbarTitle"
+            android:id="@+id/appTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="McServerStatus"
             android:textColor="@color/toolbarTextColor"
             android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
+            android:layout_weight="0" />
 
-        <!-- サーバー追加ボタン -->
+        <!-- 中央〜右あたりに空白を作って間隔を確保 -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <!-- サーバー追加ボタン（タイトルから少し右寄り） -->
         <ImageButton
             android:id="@+id/addServerButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/toolbarTitle"
-            android:layout_marginStart="12dp"
-            android:background="@android:color/transparent"
+            android:layout_marginEnd="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_add_server"
-            android:contentDescription="Add Server" />
+            android:contentDescription="Add Server"
+            android:tint="@color/toolbarTextColor" />
 
-        <!-- 太陽／月ボタン -->
+        <!-- ダーク/ライト切り替えボタン -->
         <ImageButton
             android:id="@+id/darkModeToggle"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_sun"
-            android:contentDescription="Toggle Dark/Light Mode" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_light_mode"
+            android:contentDescription="Toggle Dark Mode"
+            android:tint="@color/toolbarTextColor" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
-    <!-- ツールバー下のセパレーター -->
+    <!-- Toolbarと背景の間の薄い線 -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/toolbar"
         android:background="@color/separatorGray" />
 
-    <!-- 残りの画面コンテンツ -->
-    <RelativeLayout
-        android:id="@+id/contentLayout"
+    <!-- 背景部分 -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
         android:background="@color/backgroundColor" />
 
-</RelativeLayout>
+</LinearLayout>
