@@ -2,7 +2,6 @@ package com.rabimi.mcserverstatus
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -11,7 +10,7 @@ import androidx.core.content.edit
 class MainActivity : AppCompatActivity() {
 
     private lateinit var darkModeToggle: ImageButton
-    private lateinit var addServerButton: Button
+    private lateinit var addServerButton: ImageButton
     private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
