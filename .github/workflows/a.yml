@@ -24,7 +24,12 @@ jobs:
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
-            -alias my-key \
-            -storepass changeit \
-            -keypass changeit \
-            -dname "CN=Your Name, OU=Dev, O=YourOrg, L=City, ST=State, C=JP"
+            -alias apkkey \
+            -storepass lolrabimi \
+            -keypass lolrab1mi \
+            -dname "CN=Rabimi, OU=Dev, O=Rab1mi, L=Secert, ST=Secert, C=JP"
+      - name: Upload Keystore
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-release-key
+          path: app/my-release-key.jks
