@@ -3,48 +3,37 @@ package com.rabimi.mcserverstatus
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import android.view.Menu
-import android.view.MenuItem
+import com.rabimi.mcserverstatus.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private var isDarkMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
-    }
+        // Toolbar をセット
+        setSupportActionBar(binding.toolbar)
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        updateThemeIcon(menu?.findItem(R.id.action_toggle_theme))
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_toggle_theme -> {
-                isDarkMode = !isDarkMode
-                if (isDarkMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    item.setIcon(R.drawable.ic_dark_mode)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    item.setIcon(R.drawable.ic_light_mode)
-                }
-                true
+        // ダークモード切替ボタン
+        binding.darkModeToggle.setOnClickListener {
+            isDarkMode = !isDarkMode
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                binding.darkModeToggle.setImageResource(R.drawable.ic_moon)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                binding.darkModeToggle.setImageResource(R.drawable.ic_sun)
             }
-            else -> super.onOptionsItemSelected(item)
         }
-    }
 
-    private fun updateThemeIcon(item: MenuItem?) {
-        val mode = AppCompatDelegate.getDefaultNightMode()
-        if (mode == AppCompatDelegate.MODE_NIGHT_YES)
-            item?.setIcon(R.drawable.ic_dark_mode)
-        else
-            item?.setIcon(R.drawable.ic_light_mode)
+        // サーバー追加ボタン仮置き
+        binding.addServerButton.setOnClickListener {
+            Snackbar.make(binding.root, "サーバー追加ボタン押された！", Snackbar.LENGTH_SHORT).show()
+        }
     }
 }
