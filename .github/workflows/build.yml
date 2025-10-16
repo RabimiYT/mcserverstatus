@@ -27,6 +27,7 @@ jobs:
 
       - name: 
         run: |
+          mkdir app \
           keytool -genkeypair \
           -alias "$KEY_ALIAS" \
           -keyalg RSA \
