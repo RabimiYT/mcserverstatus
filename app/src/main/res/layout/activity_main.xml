@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayBackground">
+    android:background="@color/toolbarGray">
 
     <!-- ツールバー -->
     <LinearLayout
@@ -29,16 +29,33 @@
             android:layout_height="1dp"
             android:layout_weight="1"/>
 
+        <!-- サーバー追加ボタン -->
+        <ImageButton
+            android:id="@+id/addServerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Add Server"
+            android:src="@drawable/ic_add_server"/>
+
+        <!-- ダークモード切替 -->
         <ImageButton
             android:id="@+id/darkModeToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Toggle Dark Mode"
-            android:src="@drawable/ic_sun"/>
+            android:src="@drawable/ic_sun"
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
-    <!-- サーバー一覧とかメインコンテンツ -->
+    <!-- ツールバーと背景の間の白いグレー -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@color/separatorGray"/>
+
+    <!-- メインコンテンツ -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,14 +66,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <!-- サーバー追加ボタン -->
-            <Button
-                android:id="@+id/addServerButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="サーバー追加"/>
-
+            <!-- サーバー追加はツールバー上なのでここには不要 -->
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
