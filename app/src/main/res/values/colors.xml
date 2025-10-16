@@ -1,4 +1,5 @@
 <resources>
     <color name="toolbarGray">#555555</color>
-    <color name="grayBackground">#DDDDDD</color>
+    <color name="separatorGray">#CCCCCC</color>
+    <color name="grayBackground">#555555</color> <!-- 背景もツールバーと同じ色 -->
 </resources>
