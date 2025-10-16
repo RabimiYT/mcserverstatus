@@ -1,45 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#DDDDDD"
+    tools:context=".MainActivity">
 
-    <!-- Toolbar -->
-    <androidx.appcompat.widget.Toolbar
+    <!-- ツールバー -->
+    <LinearLayout
         android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:title="McServerStatus"
-        android:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#888888"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical">
 
-        <!-- ダークモード切替ボタン -->
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="McServerStatus"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <!-- ダーク/ライト切り替えボタン -->
         <ImageButton
             android:id="@+id/darkModeToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Toggle Dark Mode"
-            android:src="@drawable/ic_sun"  <!-- 初期はライトモードなので太陽 -->
-            android:layout_gravity="end"/>
-    </androidx.appcompat.widget.Toolbar>
+            android:src="@drawable/ic_sun" />
 
-    <!-- 他のコンテンツ -->
-    <LinearLayout
-        android:id="@+id/mainContent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        
-        <!-- サーバー追加ボタンなど配置 -->
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- ツールバー下のちょっと白いグレーの線 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#BBBBBB" />
+
+    <!-- メインコンテンツ -->
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:background="#EEEEEE">
+
+        <!-- ここにサーバー追加ボタンなど配置 -->
+        <Button
+            android:id="@+id/addServerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="サーバー追加" />
+
+    </LinearLayout>
+
+</LinearLayout>
