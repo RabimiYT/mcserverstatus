@@ -35,7 +35,7 @@ jobs:
           -keyalg RSA \
           -keysize 2048 \
           -validity 10000 \
-          -keystore my-release-key.p12 \
+          -keystore app/my-release-key.p12 \
           -storetype PKCS12 \
           -storepass "$KEYSTORE_PASSWORD" \
           -keypass "$KEY_PASSWORD" \
