@@ -20,7 +20,7 @@ android {
         release {
             storeFile file("my-release-key.jks")
             storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias "apkkey"
+            keyAlias System.Getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
