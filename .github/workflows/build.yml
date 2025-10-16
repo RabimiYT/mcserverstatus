@@ -1,71 +1,58 @@
-name: Android CI Build (Auto Sign)
+name: Sign APK (Direct JKS)
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  sign:
     runs-on: ubuntu-latest
 
     steps:
-      # ① リポジトリ取得
+      # 1️⃣ リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ② JDK 17セットアップ
-      - name: Set up JDK 17
+      # 2️⃣ Javaをセットアップ
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      # ③ Android SDK設定
-      - name: Set Android SDK path
-        run: echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+      # 3️⃣ APKをビルド（Gradleを使用）
+      - name: Build unsigned APK
+        run: gradle assembleRelease
 
-      - name: Accept Android SDK licenses
-        run: yes | sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-
-      - name: Install required SDK packages
+      # 4️⃣ APKを署名
+      - name: Sign APK
         run: |
-          sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager \
-            "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-
-      # ④ Gradleセットアップ
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 8.7
-
-      # ⑤ Keystoreを自動生成（GitHub内で）
-      - name: Generate keystore
-        run: |
-          mkdir -p app
-          keytool -genkeypair -v \
+          jarsigner \
+            -verbose \
+            -sigalg SHA256withRSA \
+            -digestalg SHA-256 \
             -keystore app/my-release-key.jks \
-            -alias apkkey \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -storepass ${{ secrets.RELEASE_STORE_PASSWORD }} \
-            -keypass ${{ secrets.RELEASE_KEY_PASSWORD }} \
-            -dname "CN=Rabimi, OU=Dev, O=Rab1mi, L=Secret, ST=Secret, C=JP"
+            -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            app/build/outputs/apk/release/app-release-unsigned.apk \
+            "$KEY_ALIAS"
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
-      # ⑥ 署名付きリリースAPKをビルド
-      - name: Build signed release APK
-        run: |
-          gradle assembleRelease \
-            -PRELEASE_STORE_FILE=app/my-release-key.jks \
-            -PRELEASE_STORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }} \
-            -PRELEASE_KEY_ALIAS=apkkey \
-            -PRELEASE_KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }} \
-            --stacktrace
+      # 5️⃣ 署名を検証
+      - name: Verify signed APK
+        run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release-unsigned.apk
 
-      # ⑦ 生成物をアップロード
+      # 6️⃣ ファイル名変更（unsigned → signed）
+      - name: Rename signed APK
+        run: mv app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-signed.apk
+
+      # 7️⃣ 成果物アップロード
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
-          name: mcserverstatus-signed-release
-          path: app/build/outputs/apk/release/app-release.apk
+          name: Signed-APK
+          path: app/build/outputs/apk/release/app-release-signed.apk
