@@ -16,12 +16,12 @@ android {
     }
 
 
-    signingConfigs {
+   signingConfigs {
         release {
-           storeFile file("my-release-key.jks")
-            storePassword project.hasProperty("RELEASE_STORE_PASSWORD") ? RELEASE_STORE_PASSWORD : "lolrab1mi"
-            keyAlias project.hasProperty("RELEASE_KEY_ALIAS") ? RELEASE_KEY_ALIAS : "apkkey"
-            keyPassword project.hasProperty("RELEASE_KEY_PASSWORD") ? RELEASE_KEY_PASSWORD : lolrabimi""
+            storeFile file("app/my-release-key.jks") // JKS ファイルの場所
+            storePassword System.getenv("KEYSTORE_PASSWORD") // GitHub Secrets 等
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
         }
     }
     
