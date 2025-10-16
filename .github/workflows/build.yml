@@ -10,49 +10,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # JDKをセットアップ
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
+      # Android SDKのパス設定
       - name: Set Android SDK path
         run: echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
 
+      # SDKライセンスを承諾
       - name: Accept Android SDK licenses
         run: yes | sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
 
+      # 必要パッケージをインストール
       - name: Install required SDK packages
         run: |
           sudo /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
+      # Gradleをセットアップ
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.7
 
-      # Decode keystore from base64 secret
-      - name: Decode Keystore
-        run: echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 --decode > app/my-release-key.jks
-
-      # Build signed release APK
-      - name: Build release APK (signed)
+      # 署名付きリリースビルド
+      - name: Build signed release APK
         run: |
           gradle assembleRelease \
             -PRELEASE_STORE_FILE=app/my-release-key.jks \
-            -PRELEASE_STORE_PASSWORD="${{ secrets.RELEASE_STORE_PASSWORD }}" \
-            -PRELEASE_KEY_ALIAS="${{ secrets.RELEASE_KEY_ALIAS }}" \
-            -PRELEASE_KEY_PASSWORD="${{ secrets.RELEASE_KEY_PASSWORD }}" \
+            -PRELEASE_STORE_PASSWORD="lolrab1mi" \
+            -PRELEASE_KEY_ALIAS="apkkey" \
+            -PRELEASE_KEY_PASSWORD="lolrabimi" \
             --stacktrace
 
-
-
-
-      # Upload signed APK
+      # 成果物をアップロード
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
