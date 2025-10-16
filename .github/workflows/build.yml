@@ -41,12 +41,8 @@ jobs:
 
       # Build signed release APK
       - name: Build release APK (signed)
-        run: gradle assembleRelease \
-            -PRELEASE_STORE_FILE=app/my-release-key.jks \
-            -PRELEASE_STORE_PASSWORD="${{ secrets.RELEASE_STORE_PASSWORD }}" \
-            -PRELEASE_KEY_ALIAS="${{ secrets.RELEASE_KEY_ALIAS }}" \
-            -PRELEASE_KEY_PASSWORD="${{ secrets.RELEASE_KEY_PASSWORD }}" \
-            --stacktrace
+        run: gradle assembleRelease -PRELEASE_STORE_FILE=app/my-release-key.jks -PRELEASE_STORE_PASSWORD="${{ secrets.RELEASE_STORE_PASSWORD }}" -PRELEASE_KEY_ALIAS="${{ secrets.RELEASE_KEY_ALIAS }}" -PRELEASE_KEY_PASSWORD="${{ secrets.RELEASE_KEY_PASSWORD }}" --stacktrace
+
 
       # Upload signed APK
       - name: Upload signed APK
