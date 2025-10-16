@@ -18,7 +18,7 @@ android {
 
    signingConfigs {
         release {
-            storeFile file("my-release-key.jks") // JKS ファイルの場所
+            storeFile file("my-release-key.p12") // JKS ファイルの場所
             storePassword System.getenv("KEYSTORE_PASSWORD") // GitHub Secrets 等
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
