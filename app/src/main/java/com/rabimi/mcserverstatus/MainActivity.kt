@@ -1,39 +1,49 @@
 package com.rabimi.mcserverstatus
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.rabimi.mcserverstatus.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.edit
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private var isDarkMode = false
+    private lateinit var darkModeToggle: ImageButton
+    private lateinit var addServerButton: Button
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
-        // Toolbar をセット
-        setSupportActionBar(binding.toolbar)
+        prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        darkModeToggle = findViewById(R.id.darkModeToggle)
+        addServerButton = findViewById(R.id.addServerButton)
 
-        // ダークモード切替ボタン
-        binding.darkModeToggle.setOnClickListener {
-            isDarkMode = !isDarkMode
-            if (isDarkMode) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.darkModeToggle.setImageResource(R.drawable.ic_moon)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.darkModeToggle.setImageResource(R.drawable.ic_sun)
-            }
+        // 現在のモードを取得
+        val isDark = prefs.getBoolean("dark_mode", false)
+        setDarkMode(isDark)
+
+        darkModeToggle.setOnClickListener {
+            val newMode = !prefs.getBoolean("dark_mode", false)
+            setDarkMode(newMode)
         }
 
-        // サーバー追加ボタン仮置き
-        binding.addServerButton.setOnClickListener {
-            Snackbar.make(binding.root, "サーバー追加ボタン押された！", Snackbar.LENGTH_SHORT).show()
+        addServerButton.setOnClickListener {
+            // TODO: サーバー追加処理
         }
+    }
+
+    private fun setDarkMode(enabled: Boolean) {
+        if (enabled) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            darkModeToggle.setImageResource(R.drawable.ic_moon)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            darkModeToggle.setImageResource(R.drawable.ic_sun)
+        }
+        prefs.edit { putBoolean("dark_mode", enabled) }
     }
 }
