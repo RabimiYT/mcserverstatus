@@ -24,33 +24,34 @@ jobs:
         with:
           gradle-version: 8.7
 
-
-      - name: 
+      # 🔧 JKSを生成（appディレクトリを事前に作成）
+      - name: Generate Keystore
         run: |
-         keytool -genkeypair \
-         -alias ${{ secrets.KEY_ALIAS }} \ 
-         -keyalg RSA \
-         -keysize 2048 \
-         -validity 10000 \
-         -keystore app/my-release-key.jks \
-         -storepass ${{ secrets.KEYSTORE_PASSWORD }} \ 
-         -keypass ${{ secrets.KEY_PASSWORD }} \
-         -dname "CN=rabimi, OU=Rabimi, O=RabimiSoft, L=Rabimi, ST=Rabimi, C=JP"
+          mkdir -p app
+          keytool -genkeypair \
+            -alias "${{ secrets.KEY_ALIAS }}" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -keystore app/my-release-key.jks \
+            -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+            -keypass "${{ secrets.KEY_PASSWORD }}" \
+            -dname "CN=rabimi, OU=Rabimi, O=RabimiSoft, L=Rabimi, ST=Rabimi, C=JP"
 
-      - name: Build unsigned APK
+      # 🧱 リリースAPKをビルド
+      - name: Build release APK
         run: gradle assembleRelease --stacktrace
         env:
-            KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-            KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      # ✅ 署名確認（必須ではないが確認用）
       - name: Verify signed APK
-        run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release-unsigned.apk
+        run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
 
-      - name: Rename signed APK
-        run: mv app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-signed.apk
-
+      # 📦 アップロード
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
           name: Signed-APK
-          path: app/build/outputs/apk/release/app-release-signed.apk
+          path: app/build/outputs/apk/release/app-release.apk
