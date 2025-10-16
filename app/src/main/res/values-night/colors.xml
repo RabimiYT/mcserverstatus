@@ -1,0 +1,6 @@
+<resources>
+    <color name="toolbarGray">#555555</color>
+    <color name="separatorGray">#AAAAAA</color>
+    <color name="backgroundColor">#555555</color>
+    <color name="textColor">#FFFFFF</color>
+</resources>
