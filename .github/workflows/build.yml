@@ -28,17 +28,19 @@ jobs:
       - name: Build unsigned APK
         run: gradle assembleRelease --stacktrace
 
-      - name: Sign APK
+      - name: 
         run: |
-          jarsigner \
-            -verbose \
-            -sigalg SHA256withRSA \
-            -digestalg SHA-256 \
-            -keystore app/my-release-key.jks \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            app/build/outputs/apk/release/app-release-unsigned.apk \
-            "$KEY_ALIAS"
+          keytool -genkeypair \
+          -alias "$KEY_ALIAS" \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -keystore my-release-key.p12 \
+          -storetype PKCS12 \
+          -storepass "$KEYSTORE_PASSWORD" \
+          -keypass "$KEY_PASSWORD" \
+          -dname "CN=rabimi, OU=Rabimi, O=RabimiSoft, L=Rabimi, ST=Rabimi, C=JP"
+
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
