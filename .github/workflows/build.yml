@@ -1,4 +1,4 @@
-name: Sign APK (Direct JKS)
+name: Android CI Build (Signed, Gradle 8.6)
 
 on:
   push:
@@ -6,26 +6,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  sign:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Javaをセットアップ
-      - name: Set up JDK
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      # 3️⃣ APKをビルド（Gradleを使用）
-      - name: Build unsigned APK
-        run: gradle assembleRelease
+      - name: Set up Gradle 8.6
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.6
 
-      # 4️⃣ APKを署名
+      - name: Build unsigned APK
+        run: gradle assembleRelease --stacktrace
+
       - name: Sign APK
         run: |
           jarsigner \
@@ -42,15 +43,12 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
-      # 5️⃣ 署名を検証
       - name: Verify signed APK
         run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release-unsigned.apk
 
-      # 6️⃣ ファイル名変更（unsigned → signed）
       - name: Rename signed APK
         run: mv app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-signed.apk
 
-      # 7️⃣ 成果物アップロード
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
