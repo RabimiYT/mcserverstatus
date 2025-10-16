@@ -32,8 +32,7 @@ jobs:
           -keyalg RSA \
           -keysize 2048 \
           -validity 10000 \
-          -keystore app/my-release-key.p12 \
-          -storetype PKCS12 \
+          -keystore app/my-release-key.jks \
           -storepass "$KEYSTORE_PASSWORD" \
           -keypass "$KEY_PASSWORD" \
           -dname "CN=rabimi, OU=Rabimi, O=RabimiSoft, L=Rabimi, ST=Rabimi, C=JP"
