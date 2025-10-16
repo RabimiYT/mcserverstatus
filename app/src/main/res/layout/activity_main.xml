@@ -1,59 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor">
+    android:background="@color/toolbarBackgroundColor">
 
-    <!-- ツールバー -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Toolbar部分 -->
+    <LinearLayout
         android:id="@+id/toolbar"
-        android:layout_width="0dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/toolbarColor"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical">
 
-        <!-- タイトル -->
+        <!-- McServerStatus文字 -->
         <TextView
-            android:id="@+id/titleText"
+            android:id="@+id/appTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="McServerStatus"
             android:textSize="20sp"
-            android:textColor="@color/textColor"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:paddingStart="16dp"/>
+            android:textColor="@color/toolbarTextColor"
+            android:textStyle="bold"/>
+
+        <!-- スペースを間に入れて右寄せ -->
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
         <!-- サーバー追加ボタン -->
         <ImageButton
             android:id="@+id/addServerButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_add_server"
-            android:contentDescription="Add Server"
-            android:tint="@color/textColor"
-            app:layout_constraintStart_toEndOf="@id/titleText"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="8dp"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Add Server" />
 
-        <!-- 太陽/月切替ボタン -->
+        <!-- ダーク/ホワイト切替ボタン（太陽/月） -->
         <ImageButton
             android:id="@+id/darkModeToggle"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:src="@drawable/ic_sun"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_sun"  <!-- ダークなら月に切替 -->
-            android:contentDescription="Toggle Dark Mode"
-            android:tint="@color/textColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="16dp"/>
+            android:contentDescription="Dark Mode Toggle"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- ツールバーと背景の間の白っぽいライン -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/toolbarDividerColor" />
+
+    <!-- メインコンテンツ -->
+    <FrameLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/toolbarColor">
+        <!-- ここにサーバーリスト等を入れる -->
+    </FrameLayout>
+
+</LinearLayout>
