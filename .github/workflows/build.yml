@@ -36,7 +36,7 @@ jobs:
             -storetype PKCS12 \
             -keystore app/my-release-key.jks \
             -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
-            -keypass "${{ secrets.KEY_PASSWORD }}" \
+            -keypass "${{ secrets.KEYSTORE_PASSWORD }}" \
             -dname "CN=rabimi, OU=Rabimi, O=RabimiSoft, L=Rabimi, ST=Rabimi, C=JP"
 
       # 🧱 リリースAPKをビルド
@@ -44,7 +44,6 @@ jobs:
         run: gradle assembleRelease --stacktrace
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
       # ✅ 署名確認（必須ではないが確認用）
