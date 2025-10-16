@@ -1,70 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DDDDDD"
-    tools:context=".MainActivity">
+    android:background="@color/grayBackground">
 
     <!-- ツールバー -->
     <LinearLayout
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:background="@color/toolbarGray"
         android:orientation="horizontal"
-        android:background="#888888"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingHorizontal="16dp"
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/appTitle"
+            android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="McServerStatus"
+            android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:textColor="#FFFFFF"
             android:textStyle="bold"/>
 
-        <Space
+        <View
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="1dp"
             android:layout_weight="1"/>
 
-        <!-- ダーク/ライト切り替えボタン -->
         <ImageButton
             android:id="@+id/darkModeToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Toggle Dark Mode"
-            android:src="@drawable/ic_sun" />
-
+            android:src="@drawable/ic_sun"/>
     </LinearLayout>
 
-    <!-- ツールバー下のちょっと白いグレーの線 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#BBBBBB" />
-
-    <!-- メインコンテンツ -->
-    <LinearLayout
-        android:id="@+id/contentLayout"
-        android:orientation="vertical"
+    <!-- サーバー一覧とかメインコンテンツ -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="#EEEEEE">
+        android:padding="16dp">
 
-        <!-- ここにサーバー追加ボタンなど配置 -->
-        <Button
-            android:id="@+id/addServerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="サーバー追加" />
+        <LinearLayout
+            android:id="@+id/serverList"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <!-- サーバー追加ボタン -->
+            <Button
+                android:id="@+id/addServerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="サーバー追加"/>
 
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
