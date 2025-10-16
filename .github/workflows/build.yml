@@ -27,7 +27,6 @@ jobs:
 
       - name: 
         run: |
-          ls \
           keytool -genkeypair \
           -alias $KEY_ALIAS \
           -keyalg RSA \
