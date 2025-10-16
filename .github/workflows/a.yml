@@ -1,0 +1,30 @@
+name: Generate Keystore
+
+on:
+  workflow_dispatch:
+
+jobs:
+  gen-keystore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Generate Keystore
+        run: |
+          mkdir -p app
+          keytool -genkey -v \
+            -keystore app/my-release-key.jks \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -alias my-key \
+            -storepass changeit \
+            -keypass changeit \
+            -dname "CN=Your Name, OU=Dev, O=YourOrg, L=City, ST=State, C=JP"
