@@ -29,7 +29,7 @@ jobs:
             -keypass lolrab1mi \
             -dname "CN=Rabimi, OU=Dev, O=Rab1mi, L=Secert, ST=Secert, C=JP"
       - name: Upload Keystore
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-release-key
           path: app/my-release-key.jks
