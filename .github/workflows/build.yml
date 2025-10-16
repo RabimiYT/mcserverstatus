@@ -25,9 +25,6 @@ jobs:
           gradle-version: 8.7
 
 
-      - name: Build unsigned APK
-        run: gradle assembleRelease --stacktrace
-
       - name: 
         run: |
           keytool -genkeypair \
@@ -45,6 +42,9 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
+      - name: Build unsigned APK
+        run: gradle assembleRelease --stacktrace
 
       - name: Verify signed APK
         run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release-unsigned.apk
