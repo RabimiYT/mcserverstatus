@@ -28,14 +28,15 @@ jobs:
       - name: 
         run: |
           mkdir app \
+          ls \
           keytool -genkeypair \
-          -alias "$KEY_ALIAS" \
+          -alias $KEY_ALIAS \
           -keyalg RSA \
           -keysize 2048 \
           -validity 10000 \
           -keystore app/my-release-key.jks \
-          -storepass "$KEYSTORE_PASSWORD" \
-          -keypass "$KEY_PASSWORD" \
+          -storepass $KEYSTORE_PASSWORD \
+          -keypass $KEY_PASSWORD \
           -dname "CN=rabimi, OU=Rabimi, O=RabimiSoft, L=Rabimi, ST=Rabimi, C=JP"
 
         env:
