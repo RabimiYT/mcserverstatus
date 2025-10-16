@@ -1,72 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/toolbarBackgroundColor">
+    android:background="?attr/colorBackground"
+    tools:context=".MainActivity">
 
-    <!-- Toolbar部分 -->
-    <LinearLayout
+    <!-- ツールバー -->
+    <RelativeLayout
         android:id="@+id/toolbar"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/toolbarColor"
+        android:background="?attr/colorToolbar"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:gravity="center_vertical">
+        android:paddingEnd="16dp">
 
-        <!-- McServerStatus文字 -->
+        <!-- McServerStatus テキスト -->
         <TextView
-            android:id="@+id/appTitle"
+            android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="McServerStatus"
+            android:textColor="?attr/colorToolbarText"
             android:textSize="20sp"
-            android:textColor="@color/toolbarTextColor"
-            android:textStyle="bold"/>
-
-        <!-- スペースを間に入れて右寄せ -->
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
 
         <!-- サーバー追加ボタン -->
         <ImageButton
             android:id="@+id/addServerButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/toolbarTitle"
+            android:layout_marginStart="12dp"
+            android:background="@android:color/transparent"
             android:src="@drawable/ic_add_server"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Add Server" />
 
-        <!-- ダーク/ホワイト切替ボタン（太陽/月） -->
+        <!-- 太陽／月ボタン -->
         <ImageButton
-            android:id="@+id/darkModeToggle"
+            android:id="@+id/darkModeButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
             android:src="@drawable/ic_sun"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Dark Mode Toggle"
-            android:layout_marginStart="8dp" />
+            android:contentDescription="Toggle Dark/Light Mode" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <!-- ツールバーと背景の間の白っぽいライン -->
+    <!-- ツールバー下のセパレーター -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/toolbarDividerColor" />
+        android:layout_height="1dp"
+        android:layout_below="@id/toolbar"
+        android:background="?attr/colorSeparator" />
 
-    <!-- メインコンテンツ -->
-    <FrameLayout
-        android:id="@+id/mainContent"
+    <!-- ここに残りの画面コンテンツ -->
+    <RelativeLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/toolbarColor">
-        <!-- ここにサーバーリスト等を入れる -->
-    </FrameLayout>
+        android:layout_below="@id/toolbar"
+        android:background="?attr/colorBackground" />
 
-</LinearLayout>
+</RelativeLayout>
