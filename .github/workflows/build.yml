@@ -27,7 +27,7 @@ jobs:
 
       - name: 
         run: |
-          mkdir app \
+          mkdir -p app \
           ls \
           keytool -genkeypair \
           -alias $KEY_ALIAS \
