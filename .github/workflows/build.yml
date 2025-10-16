@@ -33,6 +33,7 @@ jobs:
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
+            -storetype PKCS12 \
             -keystore app/my-release-key.jks \
             -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
             -keypass "${{ secrets.KEY_PASSWORD }}" \
