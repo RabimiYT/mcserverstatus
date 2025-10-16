@@ -1,48 +1,49 @@
 package com.rabimi.mcserverstatus
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.edit
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var darkModeToggle: ImageButton
-    private lateinit var addServerButton: ImageButton
-    private lateinit var prefs: SharedPreferences
+    private var isDarkMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        darkModeToggle = findViewById(R.id.darkModeToggle)
-        addServerButton = findViewById(R.id.addServerButton)
+        val darkModeToggle = findViewById<ImageButton>(R.id.darkModeToggle)
+        val addServerButton = findViewById<ImageButton>(R.id.addServerButton)
 
-        // 現在のモードを取得
-        val isDark = prefs.getBoolean("dark_mode", false)
-        setDarkMode(isDark)
+        // 保存してあるモードに合わせる
+        isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        updateToggleIcon(darkModeToggle)
 
+        // ダーク/ライト切替
         darkModeToggle.setOnClickListener {
-            val newMode = !prefs.getBoolean("dark_mode", false)
-            setDarkMode(newMode)
+            isDarkMode = !isDarkMode
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            updateToggleIcon(darkModeToggle)
         }
 
+        // サーバー追加ボタン
         addServerButton.setOnClickListener {
-            // TODO: サーバー追加処理
+            Toast.makeText(this, "Add Server clicked", Toast.LENGTH_SHORT).show()
+            // ここにサーバー追加処理を実装
         }
     }
 
-    private fun setDarkMode(enabled: Boolean) {
-        if (enabled) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            darkModeToggle.setImageResource(R.drawable.ic_moon)
+    private fun updateToggleIcon(button: ImageButton) {
+        if (isDarkMode) {
+            button.setImageResource(R.drawable.ic_moon)
         } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            darkModeToggle.setImageResource(R.drawable.ic_sun)
+            button.setImageResource(R.drawable.ic_sun)
         }
-        prefs.edit { putBoolean("dark_mode", enabled) }
     }
 }
