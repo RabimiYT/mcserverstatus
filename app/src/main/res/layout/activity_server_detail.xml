@@ -1,4 +1,4 @@
-<!<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,8 +7,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content">
 
         <!-- サーバー名 -->
         <TextView
@@ -16,9 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Server Name"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:paddingBottom="8dp" />
 
         <!-- サーバーアドレス -->
         <TextView
@@ -26,70 +25,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Server Address"
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="16sp"
+            android:paddingBottom="16dp" />
 
-        <!-- Ping -->
-        <LinearLayout
-            android:orientation="horizontal"
+        <!-- PING -->
+        <TextView
+            android:id="@+id/detailPing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ping: "
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/detailPing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="null"
-                android:textSize="16sp"/>
-        </LinearLayout>
+            android:text="Ping: null"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
 
         <!-- オンライン人数 -->
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:id="@+id/detailOnline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Players: "
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/detailOnline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="null"
-                android:textSize="16sp"/>
-        </LinearLayout>
+            android:text="Online: null"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
 
         <!-- TPS -->
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:id="@+id/detailTPS"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TPS: "
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/detailTPS"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="null"
-                android:textSize="16sp"/>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="TPS: null"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
 
     </LinearLayout>
+
 </ScrollView>
