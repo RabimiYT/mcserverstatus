@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.InetSocketAddress
 import java.net.Socket
-import com.google.android.material.R
+import com.google.android.material.R as MaterialR
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         addServerButton.setOnClickListener { showAddServerDialog() }
 
+        // サーバー状態を5秒ごとに更新
         startAutoUpdate()
     }
 
@@ -101,7 +102,8 @@ class MainActivity : AppCompatActivity() {
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
-        androidx.appcompat.app.AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog_Alert)
+        // Material3 テーマに変更
+        androidx.appcompat.app.AlertDialog.Builder(this, MaterialR.style.ThemeOverlay_Material3_Dialog_Alert)
             .setTitle("Add New Server")
             .setView(dialogView)
             .setPositiveButton("Add") { _, _ ->
@@ -125,4 +127,8 @@ class MainActivity : AppCompatActivity() {
             if (isDarkMode) R.drawable.ic_dark_mode else R.drawable.ic_light_mode
         )
     }
+
+    // TODO: 実装
+    private fun loadServers(): List<Server> = listOf() 
+    private fun saveServers(servers: List<Server>) {}
 }
