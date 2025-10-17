@@ -9,12 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import android.view.ViewGroup
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import android.app.AlertDialog
+import android.widget.EditText
+
+data class Server(val name: String, val address: String)
 
 class MainActivity : AppCompatActivity() {
 
     private var isDarkMode = false
     private lateinit var serverAdapter: ServerListAdapter
     private lateinit var rootLayout: RecyclerView
+    private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,22 +33,19 @@ class MainActivity : AppCompatActivity() {
         rootLayout = findViewById(R.id.serverRecyclerView)
 
         // RecyclerView設定
-        serverAdapter = ServerListAdapter(mutableListOf())
+        val servers = loadServers()
+        serverAdapter = ServerListAdapter(servers)
         rootLayout.adapter = serverAdapter
         rootLayout.layoutManager = LinearLayoutManager(this)
-
-        // デフォルトサーバーを追加
-        serverAdapter.addServer(Server("Hypixel", "mc.hypixel.net"))
-        serverAdapter.addServer(Server("Minemen (AS)", "as.minemen.club"))
 
         // 保存してあるモードを反映
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
         updateToggleIcon(darkModeToggle)
 
-        // 🌗 ダーク/ライト切替（フェード付き）
+        // 🌗 ダーク/ライト切替（フェード付き + Snackbar）
         darkModeToggle.setOnClickListener {
             val fade = Fade()
-            val root = window.decorView.findViewById(android.R.id.content) as android.view.ViewGroup
+            val root = window.decorView.findViewById<ViewGroup>(android.R.id.content)
             TransitionManager.beginDelayedTransition(root, fade)
 
             isDarkMode = !isDarkMode
@@ -56,8 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         // ➕ サーバー追加ボタン
         addServerButton.setOnClickListener {
-            Snackbar.make(rootLayout, "Add Server clicked", Snackbar.LENGTH_SHORT).show()
-            // TODO: サーバー追加ダイアログをここに実装
+            showAddServerDialog()
         }
     }
 
@@ -66,6 +70,55 @@ class MainActivity : AppCompatActivity() {
             button.setImageResource(R.drawable.ic_moon)
         } else {
             button.setImageResource(R.drawable.ic_sun)
+        }
+    }
+
+    // サーバー追加ダイアログ
+    private fun showAddServerDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add Server")
+
+        val layout = layoutInflater.inflate(R.layout.dialog_add_server, null)
+        val nameInput = layout.findViewById<EditText>(R.id.serverNameInput)
+        val addressInput = layout.findViewById<EditText>(R.id.serverAddressInput)
+
+        builder.setView(layout)
+        builder.setPositiveButton("Add") { _, _ ->
+            val name = nameInput.text.toString()
+            val address = addressInput.text.toString()
+            if (name.isNotEmpty() && address.isNotEmpty()) {
+                val newServer = Server(name, address)
+                serverAdapter.addServer(newServer)
+                saveServers(serverAdapter.servers)
+                Snackbar.make(rootLayout, "${newServer.name} added", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
+    }
+
+    // 保存
+    private fun saveServers(servers: List<Server>) {
+        val sharedPref = getSharedPreferences("server_pref", MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        val json = gson.toJson(servers)
+        editor.putString("servers", json)
+        editor.apply()
+    }
+
+    // 読み込み
+    private fun loadServers(): MutableList<Server> {
+        val sharedPref = getSharedPreferences("server_pref", MODE_PRIVATE)
+        val json = sharedPref.getString("servers", null)
+        return if (json != null) {
+            val type = object : TypeToken<MutableList<Server>>() {}.type
+            gson.fromJson(json, type)
+        } else {
+            // デフォルトサーバー
+            mutableListOf(
+                Server("Hypixel", "mc.hypixel.net"),
+                Server("Minemen (AS)", "as.minemen.club")
+            )
         }
     }
 }
