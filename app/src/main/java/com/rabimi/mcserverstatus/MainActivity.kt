@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageButton
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.InetSocketAddress
 import java.net.Socket
+import com.google.android.material.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
 
         addServerButton.setOnClickListener { showAddServerDialog() }
 
-        // サーバー状態を5秒ごとに更新
         startAutoUpdate()
     }
 
@@ -102,8 +101,7 @@ class MainActivity : AppCompatActivity() {
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
-        // Material3 テーマに変更
-        AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog_Alert)
+        androidx.appcompat.app.AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog_Alert)
             .setTitle("Add New Server")
             .setView(dialogView)
             .setPositiveButton("Add") { _, _ ->
@@ -127,6 +125,4 @@ class MainActivity : AppCompatActivity() {
             if (isDarkMode) R.drawable.ic_dark_mode else R.drawable.ic_light_mode
         )
     }
-
-    // loadServers / saveServers は既存のまま使用
 }
