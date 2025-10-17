@@ -7,12 +7,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import android.view.animation.AlphaAnimation
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 
 class MainActivity : AppCompatActivity() {
 
     private var isDarkMode = false
-    private lateinit var adapter: ServerListAdapter
+    private lateinit var serverAdapter: ServerListAdapter
+    private lateinit var rootLayout: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,39 +22,42 @@ class MainActivity : AppCompatActivity() {
 
         val darkModeToggle = findViewById<ImageButton>(R.id.darkModeToggle)
         val addServerButton = findViewById<ImageButton>(R.id.addServerButton)
-        val recyclerView = findViewById<RecyclerView>(R.id.serverRecyclerView)
+        rootLayout = findViewById(R.id.serverRecyclerView)
 
-        // RecyclerView 初期化
-        adapter = ServerListAdapter(mutableListOf())
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        // RecyclerView設定
+        serverAdapter = ServerListAdapter(mutableListOf())
+        rootLayout.adapter = serverAdapter
+        rootLayout.layoutManager = LinearLayoutManager(this)
 
         // デフォルトサーバーを追加
-        adapter.addServer(Server("Hypixel", "mc.hypixel.net"))
-        adapter.addServer(Server("Minemen (AS)", "as.minemen.club"))
+        serverAdapter.addServer(Server("Hypixel", "mc.hypixel.net"))
+        serverAdapter.addServer(Server("Minemen (AS)", "as.minemen.club"))
 
-        // ダークモード状態反映
+        // 保存してあるモードを反映
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
         updateToggleIcon(darkModeToggle)
 
-        // ダークモード切替
+        // 🌗 ダーク/ライト切替（フェード付き）
         darkModeToggle.setOnClickListener {
+            val fade = Fade()
+            val root = window.decorView.findViewById(android.R.id.content) as android.view.ViewGroup
+            TransitionManager.beginDelayedTransition(root, fade)
+
             isDarkMode = !isDarkMode
-            fadeTransition() // ← フェードアニメーション
             if (isDarkMode) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                Snackbar.make(it, "Dark Mode 有効", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(rootLayout, "Dark mode enabled", Snackbar.LENGTH_SHORT).show()
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                Snackbar.make(it, "Light Mode 有効", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(rootLayout, "Light mode enabled", Snackbar.LENGTH_SHORT).show()
             }
             updateToggleIcon(darkModeToggle)
         }
 
-        // サーバー追加ボタン
+        // ➕ サーバー追加ボタン
         addServerButton.setOnClickListener {
-            adapter.addServer(Server("New Server", "example.com"))
-            Snackbar.make(it, "サーバーを追加しました", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(rootLayout, "Add Server clicked", Snackbar.LENGTH_SHORT).show()
+            // TODO: サーバー追加ダイアログをここに実装
         }
     }
 
@@ -62,11 +67,5 @@ class MainActivity : AppCompatActivity() {
         } else {
             button.setImageResource(R.drawable.ic_sun)
         }
-    }
-
-    private fun fadeTransition() {
-        val fade = AlphaAnimation(0.0f, 1.0f)
-        fade.duration = 400
-        findViewById<RecyclerView>(R.id.serverRecyclerView).startAnimation(fade)
     }
 }
