@@ -38,15 +38,16 @@ class ServerListAdapter(
             if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
         ) // 緑か赤
 
-        // 詳細画面へのクリック
+        // 🔹 詳細画面へのクリック
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
             intent.putExtra("server_address", server.address)
+            intent.putExtra("server_isOnline", server.isOnline) // ← 🔥 追加！
             context.startActivity(intent)
         }
 
-        // 「…」メニュー
+        // 🔸 「…」メニュー
         holder.menuButton.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(context, view)
             popup.inflate(R.menu.server_item_menu)
