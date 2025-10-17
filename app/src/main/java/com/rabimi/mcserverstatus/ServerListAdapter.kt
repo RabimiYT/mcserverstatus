@@ -5,8 +5,10 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 
 class ServerListAdapter(
@@ -17,7 +19,8 @@ class ServerListAdapter(
     class ServerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.serverName)
         val address: TextView = itemView.findViewById(R.id.serverAddress)
-        val menuButton: ImageButton = itemView.findViewById(R.id.menuButton) // ←追加
+        val status: TextView = itemView.findViewById(R.id.serverStatus) // オンライン状態表示用
+        val menuButton: ImageButton = itemView.findViewById(R.id.menuButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerViewHolder {
@@ -30,8 +33,12 @@ class ServerListAdapter(
         val server = servers[position]
         holder.name.text = server.name
         holder.address.text = server.address
+        holder.status.text = if (server.isOnline) "Online" else "Offline"
+        holder.status.setTextColor(
+            if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
+        ) // 緑か赤
 
-        // クリック処理（詳細画面）
+        // 詳細画面へのクリック
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
@@ -39,7 +46,7 @@ class ServerListAdapter(
             context.startActivity(intent)
         }
 
-        // 「…」ボタン処理
+        // 「…」メニュー
         holder.menuButton.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(context, view)
             popup.inflate(R.menu.server_item_menu)
@@ -73,7 +80,6 @@ class ServerListAdapter(
         notifyItemInserted(servers.size - 1)
     }
 
-    // 名前かIPを編集するダイアログ
     private fun showEditDialog(server: Server, isName: Boolean, position: Int) {
         val inflater = LayoutInflater.from(context)
         val dialogView = inflater.inflate(R.layout.dialog_add_server, null)
@@ -84,8 +90,8 @@ class ServerListAdapter(
             nameInput.setText(server.name)
             addressInput.visibility = View.GONE
         } else {
-            nameInput.visibility = View.GONE
             addressInput.setText(server.address)
+            nameInput.visibility = View.GONE
         }
 
         AlertDialog.Builder(context)
