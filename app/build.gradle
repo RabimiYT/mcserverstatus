@@ -15,7 +15,6 @@ android {
         versionName "1.0"
     }
 
-
     signingConfigs {
         release {
             storeFile file("my-release-key.jks")
@@ -24,13 +23,17 @@ android {
             keyPassword System.getenv("KEYSTORE_PASSWORD")
         }
     }
-    
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            // DebugでもMaterialテーマを有効化
+            debuggable true
         }
     }
 
@@ -44,17 +47,35 @@ android {
     }
 
     buildFeatures {
-        viewBinding true   // ← ここを追加
-        dataBinding true   // ← DataBindingも使う場合
+        viewBinding true
+        dataBinding true
+    }
+
+    // マテリアルテーマなどの互換性確保
+    packaging {
+        resources {
+            excludes += [
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE.txt"
+            ]
+        }
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
+    // AndroidX 基本
+    implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+
+    // Material Design（Snackbar用）
+    implementation 'com.google.android.material:material:1.12.0'
+
+    // JSONパースなどに使うことを見越して（サーバー情報保存対応用）
+    implementation 'com.google.code.gson:gson:2.11.0'
+
+    // テスト系
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.6'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
