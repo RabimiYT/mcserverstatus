@@ -5,21 +5,13 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- 太陽の円 -->
+    <!-- 光線などのパス -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="@color/toolbarTextColor"
         android:strokeWidth="2"
-        android:pathData="M12,6a6,6 0 1,0 0,12a6,6 0 1,0 0,-12" />
+        android:pathData="M12,2 L12,6 M12,18 L12,22 M2,12 L6,12 M18,12 L22,12" />
 
-    <!-- 上下左右の光線 -->
-    <path
-        android:fillColor="@android:color/transparent"
-        android:strokeColor="@color/toolbarTextColor"
-        android:strokeWidth="2"
-        android:pathData="M12,1 L12,5 M12,19 L12,23 M1,12 L5,12 M19,12 L23,12" />
-
-    <!-- 斜め光線 -->
     <path
         android:fillColor="@android:color/transparent"
         android:strokeColor="@color/toolbarTextColor"
