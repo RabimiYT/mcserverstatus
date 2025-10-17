@@ -2,7 +2,7 @@ package com.rabimi.mcserverstatus
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showAddServerDialog() {
-        val dialogView: View = layoutInflater.inflate(R.layout.dialog_add_server, null)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_server, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
@@ -98,14 +98,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateToggleIcon(button: ImageButton) {
-        if (isDarkMode) {
-            button.setImageResource(R.drawable.ic_moon)
-        } else {
-            button.setImageResource(R.drawable.ic_sun)
-        }
+        if (isDarkMode) button.setImageResource(R.drawable.ic_moon)
+        else button.setImageResource(R.drawable.ic_sun)
     }
 
-    // ✅ サーバー保存
     private fun saveServers(servers: List<Server>) {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonArray = JSONArray()
@@ -118,7 +114,6 @@ class MainActivity : AppCompatActivity() {
         prefs.edit().putString(SERVERS_KEY, jsonArray.toString()).apply()
     }
 
-    // ✅ サーバー読み込み
     private fun loadServers(): List<Server> {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonString = prefs.getString(SERVERS_KEY, null) ?: return emptyList()
