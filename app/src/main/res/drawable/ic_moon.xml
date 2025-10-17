@@ -5,11 +5,10 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- 月（少し三日月風） -->
+    <!-- 月の半円 -->
     <path
-        android:fillColor="@color/toolbarTextColor"
-        android:pathData="M12,2
-                          A10,10 0 1,0 22,12
-                          A7,7 0 1,1 12,2
-                          Z"/>
+        android:fillColor="none"
+        android:strokeColor="@color/toolbarTextColor"
+        android:strokeWidth="2"
+        android:pathData="M16,12a8,8 0 1,1 -8,-8a6,6 0 1,0 8,8z" />
 </vector>
