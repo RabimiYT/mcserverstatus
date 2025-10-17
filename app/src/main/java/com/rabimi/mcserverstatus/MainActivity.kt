@@ -1,7 +1,6 @@
 package com.rabimi.mcserverstatus
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -14,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.net.InetSocketAddress
+import java.net.Socket
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rootLayout: RecyclerView
     private val PREFS_NAME = "servers_prefs"
     private val SERVERS_KEY = "servers"
+
+    private var updateJob: Job? = null // 🔁 定期更新用のCoroutineジョブ
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             savedServers.add(Server("Minemen (AS)", "as.minemen.club"))
         }
 
-        // Adapter に context を渡す
         serverAdapter = ServerListAdapter(savedServers, this)
         rootLayout.adapter = serverAdapter
         rootLayout.layoutManager = LinearLayoutManager(this)
@@ -65,6 +68,37 @@ class MainActivity : AppCompatActivity() {
 
         addServerButton.setOnClickListener {
             showAddServerDialog()
+        }
+
+        // 🔁 サーバー状態を5秒ごとに更新
+        startAutoUpdate()
+    }
+
+    private fun startAutoUpdate() {
+        updateJob?.cancel()
+        updateJob = CoroutineScope(Dispatchers.IO).launch {
+            while (isActive) {
+                val servers = serverAdapter.servers
+                for (server in servers) {
+                    val online = isServerOnline(server.address)
+                    withContext(Dispatchers.Main) {
+                        server.online = online
+                        serverAdapter.notifyDataSetChanged()
+                    }
+                }
+                delay(5000L)
+            }
+        }
+    }
+
+    private fun isServerOnline(address: String): Boolean {
+        return try {
+            Socket().use { socket ->
+                socket.connect(InetSocketAddress(address, 25565), 2000)
+            }
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 
@@ -119,5 +153,10 @@ class MainActivity : AppCompatActivity() {
             servers.add(Server(obj.getString("name"), obj.getString("address")))
         }
         return servers
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateJob?.cancel() // 🧹 Activity終了時にCoroutine停止
     }
 }
