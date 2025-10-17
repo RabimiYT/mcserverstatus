@@ -1,6 +1,7 @@
 package com.rabimi.mcserverstatus
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageButton
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         val addServerButton = findViewById<ImageButton>(R.id.addServerButton)
         rootLayout = findViewById(R.id.serverRecyclerView)
 
+        // 保存済みサーバーを読み込む
         val savedServers = loadServers().toMutableList()
         if (savedServers.isEmpty()) {
             savedServers.add(Server("Hypixel", "mc.hypixel.net"))
@@ -44,9 +46,11 @@ class MainActivity : AppCompatActivity() {
         rootLayout.adapter = serverAdapter
         rootLayout.layoutManager = LinearLayoutManager(this)
 
+        // ダークモード初期化
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
         updateToggleIcon(darkModeToggle)
 
+        // ダーク/ライトモード切替
         darkModeToggle.setOnClickListener {
             val fade = Fade()
             val root = window.decorView.findViewById(android.R.id.content) as android.view.ViewGroup
@@ -64,21 +68,25 @@ class MainActivity : AppCompatActivity() {
             serverAdapter.notifyDataSetChanged()
         }
 
+        // サーバー追加ボタン
         addServerButton.setOnClickListener { showAddServerDialog() }
 
-        // サーバー状態を5秒ごとに更新
+        // 🔹 サーバー状態を5秒ごとに自動更新
         startAutoUpdate()
     }
 
+    // 🔹 自動更新処理
     private fun startAutoUpdate() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             while (true) {
-                val servers = serverAdapter.servers
-                for (server in servers) {
-                    val online = isServerOnline(server.address)
-                    withContext(Dispatchers.Main) {
-                        server.isOnline = online
-                        serverAdapter.notifyItemChanged(servers.indexOf(server))
+                serverAdapter.servers.forEachIndexed { index, server ->
+                    launch(Dispatchers.IO) {
+                        val online = isServerOnline(server.address)
+                        Log.d("AutoUpdate", "${server.name} isOnline=$online") // 確認用
+                        withContext(Dispatchers.Main) {
+                            server.isOnline = online
+                            serverAdapter.notifyItemChanged(index)
+                        }
                     }
                 }
                 delay(5000L)
@@ -86,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 🔹 サーバー接続確認
     private fun isServerOnline(address: String): Boolean {
         return try {
             Socket().use { socket ->
@@ -97,12 +106,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 🔹 サーバー追加ダイアログ
     private fun showAddServerDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_server, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
-        // Material3 テーマに変更
         androidx.appcompat.app.AlertDialog.Builder(this, MaterialR.style.ThemeOverlay_Material3_Dialog_Alert)
             .setTitle("Add New Server")
             .setView(dialogView)
@@ -122,13 +131,29 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    // 🔹 ダークモードアイコン切替
     private fun updateToggleIcon(button: ImageButton) {
         button.setImageResource(
             if (isDarkMode) R.drawable.ic_dark_mode else R.drawable.ic_light_mode
         )
     }
 
-    // TODO: 実装
-    private fun loadServers(): List<Server> = listOf() 
-    private fun saveServers(servers: List<Server>) {}
+    // 🔹 サーバーリスト保存
+    private fun saveServers(servers: List<Server>) {
+        val prefs = getSharedPreferences("server_prefs", MODE_PRIVATE)
+        val editor = prefs.edit()
+        val serialized = servers.joinToString("|") { "${it.name},${it.address}" }
+        editor.putString("servers", serialized)
+        editor.apply()
+    }
+
+    // 🔹 サーバーリスト読み込み
+    private fun loadServers(): List<Server> {
+        val prefs = getSharedPreferences("server_prefs", MODE_PRIVATE)
+        val serialized = prefs.getString("servers", null) ?: return emptyList()
+        return serialized.split("|").mapNotNull {
+            val parts = it.split(",")
+            if (parts.size == 2) Server(parts[0], parts[1]) else null
+        }
+    }
 }
