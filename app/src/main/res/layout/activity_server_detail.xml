@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/detailServerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Server Name"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/detailServerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Server Address"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/detailPing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ping: "/>
+
+    <TextView
+        android:id="@+id/detailOnline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Online: "/>
+
+    <TextView
+        android:id="@+id/detailTPS"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TPS: "/>
+
+</LinearLayout>
