@@ -1,13 +1,17 @@
 package com.rabimi.mcserverstatus
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ServerListAdapter(val servers: MutableList<Server>) :
-    RecyclerView.Adapter<ServerListAdapter.ServerViewHolder>() {
+class ServerListAdapter(
+    val servers: MutableList<Server>,
+    private val context: Context
+) : RecyclerView.Adapter<ServerListAdapter.ServerViewHolder>() {
 
     class ServerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.serverName)
@@ -24,6 +28,14 @@ class ServerListAdapter(val servers: MutableList<Server>) :
         val server = servers[position]
         holder.name.text = server.name
         holder.address.text = server.address
+
+        // サーバー名タップで詳細画面へ
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ServerDetailActivity::class.java)
+            intent.putExtra("server_name", server.name)
+            intent.putExtra("server_address", server.address)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = servers.size
