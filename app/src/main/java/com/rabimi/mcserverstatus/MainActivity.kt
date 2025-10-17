@@ -20,8 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.InetSocketAddress
 import java.net.Socket
-import org.json.JSONArray
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -66,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(rootLayout, "Light mode enabled", Snackbar.LENGTH_SHORT).show()
             }
             updateToggleIcon(darkModeToggle)
+            serverAdapter.notifyDataSetChanged() // 色変更を反映
         }
 
         addServerButton.setOnClickListener {
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                     val online = isServerOnline(server.address)
                     withContext(Dispatchers.Main) {
                         server.isOnline = online
-                        serverAdapter.notifyDataSetChanged()
+                        serverAdapter.notifyItemChanged(servers.indexOf(server))
                     }
                 }
                 delay(5000L)
@@ -108,7 +107,8 @@ class MainActivity : AppCompatActivity() {
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
-        AlertDialog.Builder(this)
+        // ボタンテーマで見やすく
+        AlertDialog.Builder(this, R.style.ThemeOverlay_Material3_Dialog_Alert)
             .setTitle("Add New Server")
             .setView(dialogView)
             .setPositiveButton("Add") { _, _ ->
@@ -128,38 +128,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateToggleIcon(button: ImageButton) {
-        if (isDarkMode) button.setImageResource(R.drawable.ic_moon)
-        else button.setImageResource(R.drawable.ic_sun)
+        if (isDarkMode) {
+            button.setImageResource(R.drawable.ic_dark_mode_on)
+        } else {
+            button.setImageResource(R.drawable.ic_dark_mode_off)
+        }
+    }
+
+    // TODO: サーバーリスト保存/読み込みを実装
+    private fun loadServers(): List<Server> {
+        // JSON から復元するならここで実装
+        return emptyList()
     }
 
     private fun saveServers(servers: List<Server>) {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val jsonArray = JSONArray()
-        for (server in servers) {
-            val obj = JSONObject()
-            obj.put("name", server.name)
-            obj.put("address", server.address)
-            obj.put("isOnline", server.isOnline)
-            jsonArray.put(obj)
-        }
-        prefs.edit().putString(SERVERS_KEY, jsonArray.toString()).apply()
-    }
-
-    private fun loadServers(): List<Server> {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val jsonString = prefs.getString(SERVERS_KEY, null) ?: return emptyList()
-        val jsonArray = JSONArray(jsonString)
-        val servers = mutableListOf<Server>()
-        for (i in 0 until jsonArray.length()) {
-            val obj = jsonArray.getJSONObject(i)
-            servers.add(
-                Server(
-                    obj.getString("name"),
-                    obj.getString("address"),
-                    obj.optBoolean("isOnline", false)
-                )
-            )
-        }
-        return servers
+        // JSON で SharedPreferences に保存するならここで実装
     }
 }
