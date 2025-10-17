@@ -1,7 +1,11 @@
 package com.rabimi.mcserverstatus
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,20 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
-import android.view.ViewGroup
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import android.app.AlertDialog
-import android.widget.EditText
-
-data class Server(val name: String, val address: String)
+import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
     private var isDarkMode = false
     private lateinit var serverAdapter: ServerListAdapter
     private lateinit var rootLayout: RecyclerView
-    private val gson = Gson()
+    private val PREFS_NAME = "servers_prefs"
+    private val SERVERS_KEY = "servers"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +32,17 @@ class MainActivity : AppCompatActivity() {
         val addServerButton = findViewById<ImageButton>(R.id.addServerButton)
         rootLayout = findViewById(R.id.serverRecyclerView)
 
+        // 保存済みサーバーを読み込み
+        val savedServers = loadServers().toMutableList()
+
+        // サーバーがなければデフォルトを追加
+        if (savedServers.isEmpty()) {
+            savedServers.add(Server("Hypixel", "mc.hypixel.net"))
+            savedServers.add(Server("Minemen (AS)", "as.minemen.club"))
+        }
+
         // RecyclerView設定
-        val servers = loadServers()
-        serverAdapter = ServerListAdapter(servers)
+        serverAdapter = ServerListAdapter(savedServers)
         rootLayout.adapter = serverAdapter
         rootLayout.layoutManager = LinearLayoutManager(this)
 
@@ -42,10 +50,10 @@ class MainActivity : AppCompatActivity() {
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
         updateToggleIcon(darkModeToggle)
 
-        // 🌗 ダーク/ライト切替（フェード付き + Snackbar）
+        // 🌗 ダーク/ライト切替（フェード付き）
         darkModeToggle.setOnClickListener {
             val fade = Fade()
-            val root = window.decorView.findViewById<ViewGroup>(android.R.id.content)
+            val root = window.decorView.findViewById(android.R.id.content) as android.view.ViewGroup
             TransitionManager.beginDelayedTransition(root, fade)
 
             isDarkMode = !isDarkMode
@@ -65,6 +73,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showAddServerDialog() {
+        val dialogView: View = layoutInflater.inflate(R.layout.dialog_add_server, null)
+        val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
+        val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
+
+        AlertDialog.Builder(this)
+            .setTitle("Add New Server")
+            .setView(dialogView)
+            .setPositiveButton("Add") { _, _ ->
+                val name = nameInput.text.toString().trim()
+                val address = addressInput.text.toString().trim()
+                if (name.isNotEmpty() && address.isNotEmpty()) {
+                    val newServer = Server(name, address)
+                    serverAdapter.addServer(newServer)
+                    saveServers(serverAdapter.servers)
+                    Snackbar.make(rootLayout, "Server added!", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    Snackbar.make(rootLayout, "Please fill all fields", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     private fun updateToggleIcon(button: ImageButton) {
         if (isDarkMode) {
             button.setImageResource(R.drawable.ic_moon)
@@ -73,52 +105,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // サーバー追加ダイアログ
-    private fun showAddServerDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Add Server")
-
-        val layout = layoutInflater.inflate(R.layout.dialog_add_server, null)
-        val nameInput = layout.findViewById<EditText>(R.id.serverNameInput)
-        val addressInput = layout.findViewById<EditText>(R.id.serverAddressInput)
-
-        builder.setView(layout)
-        builder.setPositiveButton("Add") { _, _ ->
-            val name = nameInput.text.toString()
-            val address = addressInput.text.toString()
-            if (name.isNotEmpty() && address.isNotEmpty()) {
-                val newServer = Server(name, address)
-                serverAdapter.addServer(newServer)
-                saveServers(serverAdapter.servers)
-                Snackbar.make(rootLayout, "${newServer.name} added", Snackbar.LENGTH_SHORT).show()
-            }
-        }
-        builder.setNegativeButton("Cancel", null)
-        builder.show()
-    }
-
-    // 保存
+    // ✅ サーバー保存
     private fun saveServers(servers: List<Server>) {
-        val sharedPref = getSharedPreferences("server_pref", MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        val json = gson.toJson(servers)
-        editor.putString("servers", json)
-        editor.apply()
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val jsonArray = JSONArray()
+        for (server in servers) {
+            val obj = JSONObject()
+            obj.put("name", server.name)
+            obj.put("address", server.address)
+            jsonArray.put(obj)
+        }
+        prefs.edit().putString(SERVERS_KEY, jsonArray.toString()).apply()
     }
 
-    // 読み込み
-    private fun loadServers(): MutableList<Server> {
-        val sharedPref = getSharedPreferences("server_pref", MODE_PRIVATE)
-        val json = sharedPref.getString("servers", null)
-        return if (json != null) {
-            val type = object : TypeToken<MutableList<Server>>() {}.type
-            gson.fromJson(json, type)
-        } else {
-            // デフォルトサーバー
-            mutableListOf(
-                Server("Hypixel", "mc.hypixel.net"),
-                Server("Minemen (AS)", "as.minemen.club")
-            )
+    // ✅ サーバー読み込み
+    private fun loadServers(): List<Server> {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val jsonString = prefs.getString(SERVERS_KEY, null) ?: return emptyList()
+        val jsonArray = JSONArray(jsonString)
+        val servers = mutableListOf<Server>()
+        for (i in 0 until jsonArray.length()) {
+            val obj = jsonArray.getJSONObject(i)
+            servers.add(Server(obj.getString("name"), obj.getString("address")))
         }
+        return servers
     }
 }
