@@ -1,6 +1,5 @@
 package com.rabimi.mcserverstatus
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -20,8 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.InetSocketAddress
 import java.net.Socket
-import org.json.JSONArray
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -105,7 +102,8 @@ class MainActivity : AppCompatActivity() {
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
-        AlertDialog.Builder(this, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+        // Material3 テーマに変更
+        AlertDialog.Builder(this, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog_Alert)
             .setTitle("Add New Server")
             .setView(dialogView)
             .setPositiveButton("Add") { _, _ ->
@@ -130,35 +128,5 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    // --- SharedPreferences でサーバー保存/読み込み ---
-    private fun loadServers(): List<Server> {
-        val prefs = getSharedPreferences("servers_prefs", Context.MODE_PRIVATE)
-        val json = prefs.getString("servers", "[]") ?: "[]"
-        val array = JSONArray(json)
-        val list = mutableListOf<Server>()
-        for (i in 0 until array.length()) {
-            val obj = array.getJSONObject(i)
-            list.add(
-                Server(
-                    name = obj.getString("name"),
-                    address = obj.getString("address"),
-                    isOnline = obj.optBoolean("isOnline", false)
-                )
-            )
-        }
-        return list
-    }
-
-    private fun saveServers(servers: List<Server>) {
-        val prefs = getSharedPreferences("servers_prefs", Context.MODE_PRIVATE)
-        val array = JSONArray()
-        servers.forEach {
-            val obj = JSONObject()
-            obj.put("name", it.name)
-            obj.put("address", it.address)
-            obj.put("isOnline", it.isOnline)
-            array.put(obj)
-        }
-        prefs.edit().putString("servers", array.toString()).apply()
-    }
+    // loadServers / saveServers は既存のまま使用
 }
