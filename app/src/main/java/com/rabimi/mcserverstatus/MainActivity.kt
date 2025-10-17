@@ -1,6 +1,7 @@
 package com.rabimi.mcserverstatus
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -42,9 +43,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         // RecyclerView設定
-        serverAdapter = ServerListAdapter(savedServers)
+        serverAdapter = ServerListAdapter(savedServers, this)
         rootLayout.adapter = serverAdapter
         rootLayout.layoutManager = LinearLayoutManager(this)
+
+        // サーバークリックで詳細画面へ
+        serverAdapter.setOnItemClickListener { server ->
+            val intent = Intent(this, ServerDetailActivity::class.java)
+            intent.putExtra("name", server.name)
+            intent.putExtra("address", server.address)
+            startActivity(intent)
+        }
 
         // 保存してあるモードを反映
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
@@ -102,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         else button.setImageResource(R.drawable.ic_sun)
     }
 
+    // ✅ サーバー保存
     private fun saveServers(servers: List<Server>) {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonArray = JSONArray()
@@ -114,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         prefs.edit().putString(SERVERS_KEY, jsonArray.toString()).apply()
     }
 
+    // ✅ サーバー読み込み
     private fun loadServers(): List<Server> {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonString = prefs.getString(SERVERS_KEY, null) ?: return emptyList()
