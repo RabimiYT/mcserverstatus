@@ -3,4 +3,6 @@
     <color name="separatorGray">#757575</color>
     <color name="backgroundColor">#292929</color>
     <color name="toolbarTextColor">#FFFFFF</color>
+    <color name="textPrimary">#FFFFFF</color>
+    <color name="textSecondary">#B0B0B0</color>
 </resources>
