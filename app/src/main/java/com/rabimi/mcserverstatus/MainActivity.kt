@@ -1,6 +1,7 @@
 package com.rabimi.mcserverstatus
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -32,25 +33,20 @@ class MainActivity : AppCompatActivity() {
         val addServerButton = findViewById<ImageButton>(R.id.addServerButton)
         rootLayout = findViewById(R.id.serverRecyclerView)
 
-        // 保存済みサーバーを読み込み
         val savedServers = loadServers().toMutableList()
-
-        // サーバーがなければデフォルトを追加
         if (savedServers.isEmpty()) {
             savedServers.add(Server("Hypixel", "mc.hypixel.net"))
             savedServers.add(Server("Minemen (AS)", "as.minemen.club"))
         }
 
-        // RecyclerView設定
+        // Adapter に context を渡す
         serverAdapter = ServerListAdapter(savedServers, this)
         rootLayout.adapter = serverAdapter
         rootLayout.layoutManager = LinearLayoutManager(this)
 
-        // 保存してあるモードを反映
         isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
         updateToggleIcon(darkModeToggle)
 
-        // 🌗 ダーク/ライト切替（フェード付き）
         darkModeToggle.setOnClickListener {
             val fade = Fade()
             val root = window.decorView.findViewById(android.R.id.content) as android.view.ViewGroup
@@ -67,7 +63,6 @@ class MainActivity : AppCompatActivity() {
             updateToggleIcon(darkModeToggle)
         }
 
-        // ➕ サーバー追加ボタン
         addServerButton.setOnClickListener {
             showAddServerDialog()
         }
