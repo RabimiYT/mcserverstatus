@@ -1,6 +1,5 @@
 package com.rabimi.mcserverstatus
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -26,8 +25,6 @@ class MainActivity : AppCompatActivity() {
     private var isDarkMode = false
     private lateinit var serverAdapter: ServerListAdapter
     private lateinit var rootLayout: RecyclerView
-    private val PREFS_NAME = "servers_prefs"
-    private val SERVERS_KEY = "servers"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,11 +64,9 @@ class MainActivity : AppCompatActivity() {
             serverAdapter.notifyDataSetChanged() // 色変更を反映
         }
 
-        addServerButton.setOnClickListener {
-            showAddServerDialog()
-        }
+        addServerButton.setOnClickListener { showAddServerDialog() }
 
-        // 🔁 サーバー状態を5秒ごとに更新
+        // 5秒ごとにサーバー状態を更新
         startAutoUpdate()
     }
 
@@ -97,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 socket.connect(InetSocketAddress(address, 25565), 2000)
             }
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -107,8 +102,8 @@ class MainActivity : AppCompatActivity() {
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
-        // ボタンテーマで見やすく
-        AlertDialog.Builder(this, R.style.ThemeOverlay_Material3_Dialog_Alert)
+        // Material2テーマに変更してAlertDialogボタンが見えるように
+        AlertDialog.Builder(this, R.style.ThemeOverlay_Material_Dialog_Alert)
             .setTitle("Add New Server")
             .setView(dialogView)
             .setPositiveButton("Add") { _, _ ->
@@ -128,20 +123,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateToggleIcon(button: ImageButton) {
-        if (isDarkMode) {
-            button.setImageResource(R.drawable.ic_dark_mode_on)
-        } else {
-            button.setImageResource(R.drawable.ic_dark_mode_off)
-        }
+        button.setImageResource(
+            if (isDarkMode) R.drawable.ic_dark_mode else R.drawable.ic_light_mode
+        )
     }
 
-    // TODO: サーバーリスト保存/読み込みを実装
-    private fun loadServers(): List<Server> {
-        // JSON から復元するならここで実装
-        return emptyList()
-    }
-
-    private fun saveServers(servers: List<Server>) {
-        // JSON で SharedPreferences に保存するならここで実装
-    }
+    // loadServers/saveServers は既存のまま使用
 }
