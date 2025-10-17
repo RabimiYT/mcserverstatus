@@ -7,36 +7,33 @@
 
     <TextView
         android:id="@+id/detailServerName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Server Name"
         android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/detailServerAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Server Address"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/detailPing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ping: "/>
+        android:text="Ping: ..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/detailOnline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Online: "/>
+        android:text="Online: ..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/detailTPS"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TPS: "/>
+        android:text="TPS: ..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
