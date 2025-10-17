@@ -1,60 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/detailToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white" />
 
-        <!-- サーバー名 -->
-        <TextView
-            android:id="@+id/detailServerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Server Name"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <!-- サーバーアドレス -->
-        <TextView
-            android:id="@+id/detailServerAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Server Address"
-            android:textSize="16sp"
-            android:paddingBottom="16dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <!-- PING -->
-        <TextView
-            android:id="@+id/detailPing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ping: null"
-            android:textSize="16sp"
-            android:paddingBottom="8dp" />
+            <!-- サーバー名 -->
+            <TextView
+                android:id="@+id/detailServerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Server Name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp" />
 
-        <!-- オンライン人数 -->
-        <TextView
-            android:id="@+id/detailOnline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Online: null"
-            android:textSize="16sp"
-            android:paddingBottom="8dp" />
+            <!-- サーバーアドレス -->
+            <TextView
+                android:id="@+id/detailServerAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Server Address"
+                android:textSize="16sp"
+                android:paddingBottom="16dp" />
 
-        <!-- TPS -->
-        <TextView
-            android:id="@+id/detailTPS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TPS: null"
-            android:textSize="16sp"
-            android:paddingBottom="8dp" />
+            <!-- PING -->
+            <TextView
+                android:id="@+id/detailPing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ping: null"
+                android:textSize="16sp"
+                android:paddingBottom="8dp" />
 
-    </LinearLayout>
+            <!-- オンライン人数 -->
+            <TextView
+                android:id="@+id/detailOnline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Online: null"
+                android:textSize="16sp"
+                android:paddingBottom="8dp" />
 
-</ScrollView>
+            <!-- TPS -->
+            <TextView
+                android:id="@+id/detailTPS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TPS: null"
+                android:textSize="16sp"
+                android:paddingBottom="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
