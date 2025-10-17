@@ -5,24 +5,29 @@
     android:orientation="horizontal"
     android:padding="12dp">
 
+    <!-- サーバー情報縦並び -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- サーバー名 -->
         <TextView
             android:id="@+id/serverName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Server Name" />
 
+        <!-- サーバーアドレス -->
         <TextView
             android:id="@+id/serverAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:text="Server Address" />
 
         <!-- オンライン/オフライン表示用 -->
         <TextView
@@ -34,6 +39,7 @@
             android:textColor="#F44336" /> <!-- 初期は赤 -->
     </LinearLayout>
 
+    <!-- メニュー「…」ボタン -->
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="wrap_content"
