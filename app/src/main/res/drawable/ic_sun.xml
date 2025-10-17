@@ -1,9 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    
+    <!-- 太陽の中心 -->
+    <circle
+        android:cx="12"
+        android:cy="12"
+        android:r="5"
+        android:fillColor="@color/toolbarTextColor" />
+
+    <!-- 光線 -->
     <path
-        android:fillColor="#FFC107"
-        android:pathData="M12,4a1,1 0 1,1 0,2a1,1 0 0,1 0,-2M12,18a1,1 0 1,1 0,2a1,1 0 0,1 0,-2M4,12a1,1 0 1,1 2,0a1,1 0 0,1 -2,0M18,12a1,1 0 1,1 2,0a1,1 0 0,1 -2,0M12,6a6,6 0 1,1 0,12a6,6 0 0,1 0,-12Z"/>
+        android:strokeColor="@color/toolbarTextColor"
+        android:strokeWidth="2"
+        android:pathData="M12,1 L12,4 M12,20 L12,23 M1,12 L4,12 M20,12 L23,12
+                           M4.22,4.22 L6.34,6.34 M17.66,17.66 L19.78,19.78
+                           M4.22,19.78 L6.34,17.66 M17.66,6.34 L19.78,4.22" />
 </vector>
