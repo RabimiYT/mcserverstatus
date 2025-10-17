@@ -42,19 +42,22 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_add_server"
             android:contentDescription="Add Server"
-            android:tint="@color/toolbarTextColor" />
+            android:tint="@color/toolbarTextColor">
+        </ImageButton>
 
-        <!-- ダーク/ライト切り替えボタン -->
+        <!-- ダーク/ライト切替ボタン -->
         <ImageButton
             android:id="@+id/darkModeToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_sun"
             android:contentDescription="Toggle Dark Mode"
             android:tint="@color/toolbarTextColor">
-       </ImageButton>
+        </ImageButton>
+
+    </LinearLayout> <!-- toolbar をここで閉じる -->
 
     <!-- Toolbarと背景の間の薄い線 -->
     <View
