@@ -32,15 +32,16 @@ class ServerListAdapter(
 
     override fun onBindViewHolder(holder: ServerViewHolder, position: Int) {
         val server = servers[position]
+
         holder.name.text = server.name
         holder.address.text = server.address
 
-        // オンライン状態表示
+        // 🔹 オンライン状態表示（色分け）
         holder.status.text = if (server.isOnline) "Online" else "Offline"
         val onlineColor = if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
         holder.status.setTextColor(onlineColor)
 
-        // 詳細画面へのクリック
+        // 詳細画面クリック
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
@@ -78,11 +79,13 @@ class ServerListAdapter(
 
     override fun getItemCount() = servers.size
 
+    // 🔹 サーバー追加
     fun addServer(server: Server) {
         servers.add(server)
         notifyItemInserted(servers.size - 1)
     }
 
+    // 🔹 名前/IP編集ダイアログ
     private fun showEditDialog(server: Server, isName: Boolean, position: Int) {
         val inflater = LayoutInflater.from(context)
         val dialogView = inflater.inflate(R.layout.dialog_add_server, null)
