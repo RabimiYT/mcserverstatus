@@ -19,7 +19,7 @@ class ServerListAdapter(
     class ServerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.serverName)
         val address: TextView = itemView.findViewById(R.id.serverAddress)
-        val status: TextView = itemView.findViewById(R.id.serverStatus) // オンライン状態表示用
+        val status: TextView = itemView.findViewById(R.id.serverStatus)
         val menuButton: ImageButton = itemView.findViewById(R.id.menuButton)
     }
 
@@ -33,17 +33,18 @@ class ServerListAdapter(
         val server = servers[position]
         holder.name.text = server.name
         holder.address.text = server.address
+
+        // 🔹 オンライン状態表示（ダークモード対応）
         holder.status.text = if (server.isOnline) "Online" else "Offline"
-        holder.status.setTextColor(
-            if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
-        ) // 緑か赤
+        val onlineColor = if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
+        holder.status.setTextColor(onlineColor)
 
         // 🔹 詳細画面へのクリック
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
             intent.putExtra("server_address", server.address)
-            intent.putExtra("server_isOnline", server.isOnline) // ← 🔥 追加！
+            intent.putExtra("server_isOnline", server.isOnline)
             context.startActivity(intent)
         }
 
@@ -95,7 +96,8 @@ class ServerListAdapter(
             nameInput.visibility = View.GONE
         }
 
-        AlertDialog.Builder(context)
+        // 🔹 ボタンが常に見えるように Material2 テーマを指定
+        AlertDialog.Builder(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
             .setTitle(if (isName) "Edit Name" else "Edit IP")
             .setView(dialogView)
             .setPositiveButton("OK") { _, _ ->
