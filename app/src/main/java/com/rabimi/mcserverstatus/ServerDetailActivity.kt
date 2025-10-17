@@ -11,9 +11,7 @@ import kotlin.system.measureTimeMillis
 
 data class ServerStatus(
     val tps: Double?, // ほとんどのパブリックサーバーではnull
-    val ping: Int?,
-    val onlinePlayers: Int?,
-    val maxPlayers: Int?
+    val ping: Int?
 )
 
 class ServerDetailActivity : AppCompatActivity() {
@@ -31,7 +29,7 @@ class ServerDetailActivity : AppCompatActivity() {
         // Toolbar設定
         val toolbar = findViewById<Toolbar>(R.id.detailToolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 戻るボタン
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { finish() }
 
         serverNameText = findViewById(R.id.detailServerName)
@@ -42,16 +40,21 @@ class ServerDetailActivity : AppCompatActivity() {
 
         val name = intent.getStringExtra("server_name") ?: "Unknown"
         val address = intent.getStringExtra("server_address") ?: "Unknown"
+        val isOnline = intent.getBooleanExtra("server_isOnline", false)
 
         serverNameText.text = name
         serverAddressText.text = address
-        supportActionBar?.title = name // Toolbarにサーバー名表示
+        supportActionBar?.title = name
 
-        // 非同期でサーバー状態取得
+        // Online 表示
+        onlineText.text = if (isOnline) "Online" else "Offline"
+        onlineText.setTextColor(
+            if (isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
+        )
+
+        // 非同期で Ping 取得
         GetServerStatusTask(address, 25565) { status ->
             pingText.text = "Ping: ${status.ping ?: "null"}"
-            onlineText.text = if (status.onlinePlayers != null && status.maxPlayers != null)
-                "Online: ${status.onlinePlayers}/${status.maxPlayers}" else "Online: null"
             tpsText.text = "TPS: ${status.tps ?: "null"}"
         }.execute()
     }
@@ -70,12 +73,10 @@ class ServerDetailActivity : AppCompatActivity() {
                 socket.close()
                 ServerStatus(
                     tps = null,
-                    ping = pingTime.toInt(),
-                    onlinePlayers = null,
-                    maxPlayers = null
+                    ping = pingTime.toInt()
                 )
             } catch (e: Exception) {
-                ServerStatus(tps = null, ping = null, onlinePlayers = null, maxPlayers = null)
+                ServerStatus(tps = null, ping = null)
             }
         }
 
