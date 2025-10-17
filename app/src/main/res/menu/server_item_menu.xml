@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_edit_name"
+        android:title="Edit Name" />
+    <item
+        android:id="@+id/menu_edit_ip"
+        android:title="Edit IP" />
+    <item
+        android:id="@+id/menu_delete"
+        android:title="Delete" />
+</menu>
