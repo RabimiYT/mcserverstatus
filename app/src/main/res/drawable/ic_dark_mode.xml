@@ -5,7 +5,7 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- 月の半分 -->
+    <!-- 月（少し三日月風） -->
     <path
         android:fillColor="@color/toolbarTextColor"
         android:pathData="M12,2
