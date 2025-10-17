@@ -8,14 +8,6 @@
     tools:context=".MainActivity">
 
     <!-- Toolbar -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/serverRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:padding="8dp"
-        android:clipToPadding="false"
-    </androidx>
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -41,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <!-- サーバー追加ボタン（タイトルから少し右寄り） -->
+        <!-- サーバー追加ボタン -->
         <ImageButton
             android:id="@+id/addServerButton"
             android:layout_width="40dp"
@@ -70,10 +62,12 @@
         android:layout_height="1dp"
         android:background="@color/separatorGray" />
 
-    <!-- 背景部分 -->
-    <FrameLayout
+    <!-- サーバーリスト -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/serverRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor" />
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>
