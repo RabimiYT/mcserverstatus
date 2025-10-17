@@ -1,13 +1,3 @@
-package com.rabimi.mcserverstatus
-
-import android.content.Context
-import android.content.Intent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-
 class ServerListAdapter(
     val servers: MutableList<Server>,
     private val context: Context
@@ -16,6 +6,7 @@ class ServerListAdapter(
     class ServerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.serverName)
         val address: TextView = itemView.findViewById(R.id.serverAddress)
+        val menuButton: ImageButton = itemView.findViewById(R.id.menuButton) // ←追加
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerViewHolder {
@@ -29,12 +20,38 @@ class ServerListAdapter(
         holder.name.text = server.name
         holder.address.text = server.address
 
-        // クリック処理
+        // クリック処理（詳細画面）
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
             intent.putExtra("server_address", server.address)
             context.startActivity(intent)
+        }
+
+        // 「…」ボタン処理
+        holder.menuButton.setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(context, view)
+            popup.inflate(R.menu.server_item_menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menu_edit_name -> {
+                        showEditDialog(server, true, position)
+                        true
+                    }
+                    R.id.menu_edit_ip -> {
+                        showEditDialog(server, false, position)
+                        true
+                    }
+                    R.id.menu_delete -> {
+                        servers.removeAt(position)
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, servers.size)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
         }
     }
 
@@ -43,5 +60,32 @@ class ServerListAdapter(
     fun addServer(server: Server) {
         servers.add(server)
         notifyItemInserted(servers.size - 1)
+    }
+
+    // 名前かIPを編集するダイアログ
+    private fun showEditDialog(server: Server, isName: Boolean, position: Int) {
+        val inflater = LayoutInflater.from(context)
+        val dialogView = inflater.inflate(R.layout.dialog_add_server, null)
+        val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
+        val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
+
+        if (isName) {
+            nameInput.setText(server.name)
+            addressInput.visibility = View.GONE
+        } else {
+            nameInput.visibility = View.GONE
+            addressInput.setText(server.address)
+        }
+
+        AlertDialog.Builder(context)
+            .setTitle(if (isName) "Edit Name" else "Edit IP")
+            .setView(dialogView)
+            .setPositiveButton("OK") { _, _ ->
+                if (isName) server.name = nameInput.text.toString().trim()
+                else server.address = addressInput.text.toString().trim()
+                notifyItemChanged(position)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
