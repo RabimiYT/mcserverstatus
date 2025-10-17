@@ -1,5 +1,7 @@
 package com.rabimi.mcserverstatus
 
+import com.rabimi.mcserverstatus.ServerListAdapter
+import com.rabimi.mcserverstatus.Server
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
