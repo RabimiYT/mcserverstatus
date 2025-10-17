@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R
 
 class ServerListAdapter(
     val servers: MutableList<Server>,
@@ -24,8 +25,7 @@ class ServerListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_server, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_server, parent, false)
         return ServerViewHolder(view)
     }
 
@@ -34,12 +34,9 @@ class ServerListAdapter(
         holder.name.text = server.name
         holder.address.text = server.address
 
-        // 🔹 オンライン状態表示（ダークモード対応）
         holder.status.text = if (server.isOnline) "Online" else "Offline"
-        val onlineColor = if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt()
-        holder.status.setTextColor(onlineColor)
+        holder.status.setTextColor(if (server.isOnline) 0xFF4CAF50.toInt() else 0xFFF44336.toInt())
 
-        // 🔹 詳細画面へのクリック
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
@@ -48,7 +45,6 @@ class ServerListAdapter(
             context.startActivity(intent)
         }
 
-        // 🔸 「…」メニュー
         holder.menuButton.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(context, view)
             popup.inflate(R.menu.server_item_menu)
@@ -83,8 +79,7 @@ class ServerListAdapter(
     }
 
     private fun showEditDialog(server: Server, isName: Boolean, position: Int) {
-        val inflater = LayoutInflater.from(context)
-        val dialogView = inflater.inflate(R.layout.dialog_add_server, null)
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_server, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.serverNameInput)
         val addressInput = dialogView.findViewById<EditText>(R.id.serverAddressInput)
 
@@ -96,8 +91,7 @@ class ServerListAdapter(
             nameInput.visibility = View.GONE
         }
 
-        // 🔹 ボタンが常に見えるように Material2 テーマを指定
-        AlertDialog.Builder(context, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+        AlertDialog.Builder(context, com.google.android.material.R.style.ThemeOverlay_Material3_Dialog_Alert)
             .setTitle(if (isName) "Edit Name" else "Edit IP")
             .setView(dialogView)
             .setPositiveButton("OK") { _, _ ->
