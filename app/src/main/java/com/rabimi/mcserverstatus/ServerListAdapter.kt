@@ -29,7 +29,7 @@ class ServerListAdapter(
         holder.name.text = server.name
         holder.address.text = server.address
 
-        // サーバー名タップで詳細画面へ
+        // クリック処理
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ServerDetailActivity::class.java)
             intent.putExtra("server_name", server.name)
