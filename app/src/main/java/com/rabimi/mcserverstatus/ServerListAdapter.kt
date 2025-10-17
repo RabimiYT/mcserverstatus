@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ServerListAdapter(private val servers: MutableList<Server>) :
+class ServerListAdapter(val servers: MutableList<Server>) :
     RecyclerView.Adapter<ServerListAdapter.ServerViewHolder>() {
 
     class ServerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
