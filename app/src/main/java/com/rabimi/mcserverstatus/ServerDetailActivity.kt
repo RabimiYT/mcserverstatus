@@ -4,9 +4,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
-import java.io.DataInputStream
-import java.io.DataOutputStream
+import androidx.appcompat.widget.Toolbar
 import java.net.InetSocketAddress
 import java.net.Socket
 import kotlin.system.measureTimeMillis
@@ -30,6 +28,12 @@ class ServerDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_server_detail)
 
+        // Toolbar設定
+        val toolbar = findViewById<Toolbar>(R.id.detailToolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 戻るボタン
+        toolbar.setNavigationOnClickListener { finish() }
+
         serverNameText = findViewById(R.id.detailServerName)
         serverAddressText = findViewById(R.id.detailServerAddress)
         pingText = findViewById(R.id.detailPing)
@@ -41,13 +45,14 @@ class ServerDetailActivity : AppCompatActivity() {
 
         serverNameText.text = name
         serverAddressText.text = address
+        supportActionBar?.title = name // Toolbarにサーバー名表示
 
         // 非同期でサーバー状態取得
         GetServerStatusTask(address, 25565) { status ->
-            pingText.text = status.ping?.toString() ?: "null"
+            pingText.text = "Ping: ${status.ping ?: "null"}"
             onlineText.text = if (status.onlinePlayers != null && status.maxPlayers != null)
-                "${status.onlinePlayers}/${status.maxPlayers}" else "null"
-            tpsText.text = status.tps?.toString() ?: "null"
+                "Online: ${status.onlinePlayers}/${status.maxPlayers}" else "Online: null"
+            tpsText.text = "TPS: ${status.tps ?: "null"}"
         }.execute()
     }
 
@@ -63,7 +68,6 @@ class ServerDetailActivity : AppCompatActivity() {
                     socket.connect(InetSocketAddress(host, port), 2000)
                 }
                 socket.close()
-                // オンライン人数はpublic ping protocolを簡略化して0/0固定
                 ServerStatus(
                     tps = null,
                     ping = pingTime.toInt(),
